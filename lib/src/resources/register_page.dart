@@ -16,7 +16,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     authBloc.dispose();
     super.dispose();
   }
@@ -220,10 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   _onSignUpClicked() {
-    print(_nameController);
-    var isValid = authBloc.isValid(_nameController.text, _phoneController.text, _emailController.text, _passController.text);
-    if (isValid) {
-      ///Create user
-    }
+    var isValid = authBloc.isValid(_nameController.text, _emailController.text,
+        _passController.text, _phoneController.text);
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-
 class AuthBloc {
 
   StreamController _nameController = new StreamController();
@@ -15,19 +14,19 @@ class AuthBloc {
 
   bool isValid(String name, String email, String pass, String phone) {
     if (name == null || name.length == 0) {
-      _nameController.sink.addError("Nhập tên");
+      _nameController.sink.addError("Vui lòng nhập tên");
       return false;
     }
     _nameController.sink.add("");
 
     if (phone == null || phone.length == 0) {
-      _phoneController.sink.addError("Nhập số điện thoại");
+      _phoneController.sink.addError("Vui lòng nhập số điện thoại");
       return false;
     }
     _phoneController.sink.add("");
 
     if (email == null || email.length == 0) {
-      _emailController.sink.addError("Nhập email");
+      _emailController.sink.addError("Vui lòng nhập email");
       return false;
     }
     _emailController.sink.add("");
