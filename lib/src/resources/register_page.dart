@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:taxi_app/src/blocs/auth_bloc.dart';
+import 'package:taxi_app/src/resources/dialog/loading_dialog.dart';
+import 'package:taxi_app/src/resources/dialog/msg_dialog.dart';
+import 'package:taxi_app/src/resources/home_page.dart';
 
 class RegisterPage extends StatefulWidget {
   @override
@@ -221,5 +224,18 @@ class _RegisterPageState extends State<RegisterPage> {
   _onSignUpClicked() {
     var isValid = authBloc.isValid(_nameController.text, _emailController.text,
         _passController.text, _phoneController.text);
+    if (isValid) {
+      LoadingDialog.showLoadingDialog(context, "Loading ...");
+
+      authBloc.signUp(_nameController.text, _phoneController.text,
+          _emailController.text, _passController.text, () {
+        LoadingDialog.hideLoadingDialog(context);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }, (msg) {
+        LoadingDialog.hideLoadingDialog(context);
+        MsgDialog.showMsgDialog(context, "Sign Up", msg);
+      });
+    }
   }
 }

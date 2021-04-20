@@ -1,6 +1,10 @@
 import 'dart:async';
 
+import 'package:taxi_app/src/fire_base/fire_base_auth.dart';
+
 class AuthBloc {
+
+  var _firAuth = FirAuth();
 
   StreamController _nameController = new StreamController();
   StreamController _emailController = new StreamController();
@@ -38,6 +42,12 @@ class AuthBloc {
     _passController.sink.add("");
 
     return true;
+  }
+
+  void signUp(String name, String phone, String email, String pass, Function onSuccess, Function(String) onError) {
+
+    _firAuth.singUp(name, phone, email, pass, onSuccess,onError);
+
   }
 
   void dispose() {
