@@ -1,5 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:taxi_app/src/blocs/auth_bloc.dart';
+import 'package:taxi_app/src/resources/dialog/loading_dialog.dart';
+import 'package:taxi_app/src/resources/dialog/msg_dialog.dart';
+import 'package:taxi_app/src/resources/home_page.dart';
 import 'package:taxi_app/src/resources/register_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,6 +12,10 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController _emailController = new TextEditingController();
+  TextEditingController _passController = new TextEditingController();
+  AuthBloc _authBloc = new AuthBloc();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,42 +46,52 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 145, 0, 20),
-                child: TextField(
-                  style: TextStyle(fontSize: 18, color: Colors.black),
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    prefixIcon: Container(
-                      width: 50,
-                      child: Image.asset("ic_mail.png"),
-                    ),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Color(0xffCED0D2),
-                        width: 1,
+                child: StreamBuilder(
+                  stream: _authBloc.emailStream,
+                  builder: (context, snapshot) => TextField(
+                    controller: _emailController,
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    decoration: InputDecoration(
+                      errorText: snapshot.hasError ? snapshot.error : null,
+                      labelText: "Email",
+                      prefixIcon: Container(
+                        width: 50,
+                        child: Image.asset("ic_mail.png"),
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xffCED0D2),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(6.0)),
+                      ),
                     ),
                   ),
                 ),
               ),
-              TextField(
-                style: TextStyle(fontSize: 18, color: Colors.black),
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  prefixIcon: Container(
-                    width: 50,
-                    child: Image.asset("ic_lock.png"),
-                  ),
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      width: 1,
-                      color: Color(0xffCED0D2),
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(6.0)),
-                  ),
-                ),
-              ),
+              StreamBuilder(
+                  stream: _authBloc.passStream,
+                  builder: (context, snapshot) => TextField(
+                        controller: _passController,
+                        style: TextStyle(fontSize: 18, color: Colors.black),
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          errorText: snapshot.hasError ? snapshot.error : null,
+                          labelText: "Password",
+                          prefixIcon: Container(
+                            width: 50,
+                            child: Image.asset("ic_lock.png"),
+                          ),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 1,
+                              color: Color(0xffCED0D2),
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(6.0)),
+                          ),
+                        ),
+                      )),
               Container(
                 constraints: BoxConstraints.loose(Size(double.infinity, 40)),
                 alignment: AlignmentDirectional.centerEnd,
@@ -91,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 52,
                   width: double.infinity,
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: _onClickLogin,
                     child: Text(
                       "Login",
                       style: TextStyle(
@@ -139,5 +157,20 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _onClickLogin() {
+    String email = _emailController.text;
+    String pass = _passController.text;
+
+    LoadingDialog.showLoadingDialog(context, "Loading...");
+    _authBloc.signIn(email, pass, () {
+      LoadingDialog.hideLoadingDialog(context);
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (context) => HomePage()));
+    }, (msg) {
+      LoadingDialog.hideLoadingDialog(context);
+      MsgDialog.showMsgDialog(context, "Login Failed", msg);
+    });
   }
 }

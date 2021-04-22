@@ -3,6 +3,10 @@
    <application
         android:label="taxi_app"
         android:icon="@mipmap/ic_launcher">
+
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyCGy04Yl8it0bQCKCue31tc73xpyghpVWQ"/>
+
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

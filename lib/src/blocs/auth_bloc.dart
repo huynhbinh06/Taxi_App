@@ -50,6 +50,10 @@ class AuthBloc {
 
   }
 
+  void signIn(String email, String pass, Function onSuccess, Function(String) onSignInError) {
+    _firAuth.signIn(email, pass, onSuccess, onSignInError);
+  }
+
   void dispose() {
     _nameController.close();
     _emailController.close();

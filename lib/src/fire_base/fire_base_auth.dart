@@ -24,8 +24,18 @@ class FirAuth {
     ref.child(userId).set(user).then((user) {
       // success
       onSuccess();
+      print("user => " + userId);
     }).catchError((err) {
       onRegisterError("Singup failed, please try again");
+    });
+  }
+
+  void signIn(String email, String pass, Function onSuccess, Function(String) onSignInError) {
+    _firebaseAuth.signInWithEmailAndPassword(email: email, password: pass).then((user) {
+      onSuccess();
+    }).catchError((error) {
+      print("ERROR => " + error.toString());
+      onSignInError("Sign-In failed, please try again");
     });
   }
 
@@ -45,5 +55,10 @@ class FirAuth {
         onRegisterError("Signup failed, please try again");
         break;
     }
+  }
+
+  Future<void> signOut() async {
+    print("Sign Out");
+    _firebaseAuth.signOut();
   }
 }
